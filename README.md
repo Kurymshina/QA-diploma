@@ -1,6 +1,6 @@
 # __Дипломный проект по профессии «Тестировщик»__
 
-## [Задание](https://github.com/netology-code/qa-diploma/"netology-code/qa-diploma") 
+## [Задание](https://github.com/netology-code/qa-diploma/"netology-code/qa-diploma) 
  Ключевая задача — *автоматизировать позитивные и негативные сценарии покупки тура*
 
 ## Документация
