@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.11.2'
+}
+
+group 'ru.netology'
+version '1.0-SNAPSHOT'
+sourceCompatibility = 11
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+allure {
+    version = '2.20.1'
+
+    useJUnit5 {
+        version = '2.20.1'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testImplementation 'com.codeborne:selenide:6.17.1'
+    testImplementation 'io.qameta.allure:allure-selenide:2.20.1'
+    testImplementation 'mysql:mysql-connector-java:8.0.30'
+    testImplementation 'commons-dbutils:commons-dbutils:1.7'
+    testImplementation 'org.postgresql:postgresql:42.2.18'
+    testImplementation 'com.github.javafaker:javafaker:1.0.2'
+    testImplementation 'org.projectlombok:lombok:1.18.20'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.0'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'selenide.headless', System.getProperty('selenide.headless')
+    systemProperty 'db.url', System.getProperty('db.url', "jdbc:mysql://localhost:3306/app")
+    systemProperty 'db.user', System.getProperty('db.user', "app")
+    systemProperty 'db.password', System.getProperty('db.password', "pass")
+    systemProperty 'sut.url', System.getProperty('sut.url', "http://localhost:8080")
+}
