@@ -149,7 +149,7 @@ public class DataHelper {
         StringBuilder sb = new StringBuilder(length);
         Random random = new Random();
         int i = 0;
-        while (i > length) {
+        while (i < length) {
             int index = random.nextInt(specialCharacters.length());
             sb.append(specialCharacters.charAt(index));
             i++;

@@ -24,9 +24,11 @@ public class PaymentPage {
         header.shouldBe(visible);
         cardNumberField.setValue(number);
     }
+
     public boolean checkNumber(String number) {
         return cardNumberField.getValue().equals(number);
     }
+
     public boolean checkCvc(String number) {
         return cvcField.getValue().equals(number);
     }
@@ -88,32 +90,10 @@ public class PaymentPage {
         $(".input__sub").shouldHave(exactText("Истёк срок действия карты")).shouldBe(visible);
     }
 
-    public void messageInvalidName() {
-        $(".input__sub").shouldHave(exactText("Введите полное имя и фамилию")).shouldBe(visible);
-    }
-
-    public void messageLongName() {
-        $(".input__sub").shouldHave(exactText("Значение поля не может содержать более 100 символов")).shouldBe(visible);
-    }
-
-    public void messageInvalidDataName() {
-        $(".input__sub").shouldHave(exactText("Значение поля может содержать только буквы и дефис")).shouldBe(visible);
-    }
-
-    public void messageShortName() {
-        $(".input__sub").shouldHave(exactText("Значение поля должно содержать больше одной буквы")).shouldBe(visible);
-    }
-
-    public void messageInvalidCvc() {
-        $(".input__sub").shouldHave(exactText("Значение поля должно содержать 3 цифры")).shouldBe(visible);
-    }
-
-    public void messageFieldsAreRequired() {
-        $$(".input__sub").shouldHave(CollectionCondition.size(5)).shouldHave(CollectionCondition.texts("Поле обязательно для заполнения"));
-    }
     public void messageFieldAreRequired() {
         $$(".input__sub").shouldHave(CollectionCondition.size(1)).shouldHave(CollectionCondition.texts("Поле обязательно для заполнения"));
     }
+
     public void messageDeclined() {
         $$(".input__sub").shouldHave(CollectionCondition.size(1)).shouldHave(CollectionCondition.texts("Карта отклонена, обратитесь в ваш банк или попробуйте другую карту"));
     }

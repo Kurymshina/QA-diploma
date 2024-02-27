@@ -40,7 +40,7 @@ public class TourServiceTest {
         SelenideLogger.removeListener("allure");
     }
 
-    @Test
+        @Test
     @DisplayName("1 Покупка тура валидной картой с помощью кнопки \"Купить\" со статусом \"APPROVED\"")
     public void shouldBuyWithValidCardAndApproved() {
         tourPage.pay();
@@ -407,7 +407,6 @@ public class TourServiceTest {
 
     @Test
     @DisplayName("3.5.1 Ввод невалидного имени владельца карты при покупке тура.(Ввод данных в поле Владелец пользователя с именем на кириллице)")
-//баг
     public void shouldGetMessageWhenOwnerOnCyrillic() {
         tourPage.pay();
         paymentPage.setNumber(DataHelper.generateCardNumber(16));
@@ -447,10 +446,10 @@ public class TourServiceTest {
     }
 
     @Test
-    @DisplayName("3.5.3 Ввод невалидного имени владельца карты при покупке тура.(Ввод данных в поле Владелец со спецсимволами")
+    @DisplayName("3.5.4 Ввод невалидного имени владельца карты при покупке тура.(Ввод данных в поле Владелец со спецсимволами")
     public void shouldGetMessageWhenOwnerOnSymbols() {
         tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumber(16));
+        paymentPage.setNumber(DataHelper.getApprovedCardNumber());
         paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
         paymentPage.setOwner(DataHelper.generateSpecialCharacters(15));
         paymentPage.setCVV(DataHelper.generateTreeDigit());
@@ -461,7 +460,7 @@ public class TourServiceTest {
     }
 
     @Test
-    @DisplayName("3.5.4 Ввод невалидного имени владельца карты при покупке тура.(Значение длинной более 25 символов в верхнем и нижнем регистре")
+    @DisplayName("3.5.5 Ввод невалидного имени владельца карты при покупке тура.(Значение длинной более 25 символов в верхнем и нижнем регистре")
     public void shouldGetMessageWhenOwnerLargest() {
         tourPage.pay();
         paymentPage.setNumber(DataHelper.generateCardNumber(16));
@@ -564,13 +563,13 @@ public class TourServiceTest {
     @Test
     @DisplayName("5.1.1 Ввод невалидного номера карты при покупке тура в кредит. (Длинна менее 16 символов)")
     public void shouldGetMessageWhenPurchaseOnCreditWithInvalidCardNumberShorterThanExpected() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumberMustBeLessThan());
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCardNumberMustBeLessThan());
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
         assertEquals(0, DataHelperDB.getOrderEntityCount());
     }
 
@@ -578,15 +577,15 @@ public class TourServiceTest {
     @DisplayName("5.1.2 Ввод невалидного номера карты при покупке тура в кредит. (Длинна более 16 символов)")
     //d=вводится 16 символов, дальнейший ввод не возможен
     public void shouldBeSuccessWhenPurchaseOnCreditWithInvalidCardNumberTallerThanExpected() {
-        tourPage.pay();
+        tourPage.payOnCredit();
         String a = DataHelper.generateCardNumber(17);
-        paymentPage.setNumber(a);
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
+        creditPage.setNumber(a);
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
         assertEquals(0, DataHelperDB.getOrderEntityCount());
-        boolean actual = paymentPage.checkNumber(a);
+        boolean actual = creditPage.checkNumber(a);
         assertFalse(actual);
     }
 
@@ -595,13 +594,13 @@ public class TourServiceTest {
     @DisplayName("5.1.3 Ввод невалидного номера карты при покупке тура в кредит. (Вставка специальных символов)")
     //Вставка невозможна
     public void shouldGetMessageWhenPurchaseOnCreditWithInvalidCardNumberContainsSpecialCharters() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateSpecialCharacters(17));
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateSpecialCharacters(17));
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
         assertEquals(0, DataHelperDB.getOrderEntityCount());
     }
 
@@ -609,27 +608,27 @@ public class TourServiceTest {
     @DisplayName("5.1.4 Ввод невалидного номера карты при покупке тура в кредит. (Вставка кириллицы)")
     //Вставка невозможна
     public void shouldGetMessageWhenPurchaseOnCreditWithInvalidCardNumberContainsCyrillic() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCyrillicName());
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCyrillicName());
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
         assertEquals(0, DataHelperDB.getOrderEntityCount());
     }
 
     @Test
     @DisplayName("5.1.5 Ввод невалидного номера карты при покупке тура в кредит. (Пустое поле)")
     public void shouldGetMessageWhenPurchaseOnCreditWithEmptyFieldNumberCard() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getEmptyNumberCard());
-        paymentPage.setMonth(DataHelper.getNextMonth());
-        paymentPage.setYear(DataHelper.getCurrentYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.getRandomCvc());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getEmptyNumberCard());
+        creditPage.setMonth(DataHelper.getNextMonth());
+        creditPage.setYear(DataHelper.getCurrentYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.getRandomCvc());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
         assertEquals(0, DataHelperDB.getOrderEntityCount());
 
     }
@@ -637,30 +636,30 @@ public class TourServiceTest {
     @Test
     @DisplayName("5.2.1 Ввод даты с невалидным месяцем действия карты при покупке тура в кредит. (Значение в 1 символ")
     public void shouldGetMessageWhenPurchaseOnCreditWithMonthFieldWithOneDigits() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getRandomCardNumber());
-        paymentPage.setMonth(DataHelper.getMonthWithOneValue());
-        paymentPage.setYear(DataHelper.getCurrentYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.getRandomCvc());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getRandomCardNumber());
+        creditPage.setMonth(DataHelper.getMonthWithOneValue());
+        creditPage.setYear(DataHelper.getCurrentYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.getRandomCvc());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
     }
 
     @Test
     @DisplayName("5.2.2 Ввод даты с невалидным месяцем действия карты при покупке тура в кредит. (Значение в 3 символа)")
     public void shouldGetMessageWhenPurchaseOnCreditWithMonthFieldWithTreeDigits() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getRandomCardNumber());
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getRandomCardNumber());
         String a = DataHelper.generateInvalidMonthWihLengthThreeDigits();
-        paymentPage.setMonth(a);
-        paymentPage.setYear(DataHelper.getCurrentYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.getRandomCvc());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidDate();
+        creditPage.setMonth(a);
+        creditPage.setYear(DataHelper.getCurrentYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.getRandomCvc());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidDate();
         assertEquals(0, DataHelperDB.getOrderEntityCount());
-        boolean actual = paymentPage.checkNumber(a);
+        boolean actual = creditPage.checkNumber(a);
         assertFalse(actual);
     }
 
@@ -668,62 +667,62 @@ public class TourServiceTest {
     @Test
     @DisplayName("5.2.3 Ввод даты с невалидным месяцем действия карты при покупке тура в кредит. (Пустое поле)")
     public void shouldGetMessageWhenPurchaseOnCreditWithMonthFieldEmpty() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getRandomCardNumber());
-        paymentPage.setMonth(DataHelper.getEmptyMonth());
-        paymentPage.setYear(DataHelper.getCurrentYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.getRandomCvc());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getRandomCardNumber());
+        creditPage.setMonth(DataHelper.getEmptyMonth());
+        creditPage.setYear(DataHelper.getCurrentYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.getRandomCvc());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
 
     }
 
     @Test
     @DisplayName("5.2.4 Ввод даты с невалидным месяцем действия карты при покупке тура в кредит. (Ввод прошедшего месяца при вводе текущего года, не действует при текущем месяца - январь)")
     public void shouldGetMessageWhenPurchaseOnCreditWithPreviouslyMonth() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumber(16));
-        paymentPage.setMonth(DataHelper.getPreviousMonth());
-        paymentPage.setYear(DataHelper.getCurrentYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidDate();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCardNumber(16));
+        creditPage.setMonth(DataHelper.getPreviousMonth());
+        creditPage.setYear(DataHelper.getCurrentYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidDate();
         assertEquals(0, DataHelperDB.getOrderEntityCount());
     }
 
     @Test
     @DisplayName("5.2.5 Ввод даты с невалидным месяцем действия карты при покупке тура в кредит. (Значение больше 12)")
     public void shouldGetMessageWhenPurchaseOnCreditWithMonthFieldMoreThenTwelve() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getApprovedCardNumber());
-        paymentPage.setMonth(String.valueOf(DataHelper.generateInvalidMonthMoreThen12()));
-        paymentPage.setYear(DataHelper.generateValidYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidDate();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getApprovedCardNumber());
+        creditPage.setMonth(String.valueOf(DataHelper.generateInvalidMonthMoreThen12()));
+        creditPage.setYear(DataHelper.generateValidYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidDate();
     }
 
     @ParameterizedTest
     @MethodSource("provideStringsForValidation")
     @DisplayName("5.2.6 Ввод даты с невалидным месяцем действия карты при покупке тура в кредит. (Ввод значений: c длиной в 1 символ, двухзначные больше 12, со значением \"00\", со значением \"0\" )")
     public void shouldGetMessageWhenPurchaseOnCreditWithMonthFieldWithInvalidMonth(String month, String year) {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumber(16));
-        paymentPage.setMonth(month);
-        paymentPage.setYear(year);
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCardNumber(16));
+        creditPage.setMonth(month);
+        creditPage.setYear(year);
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
         String[] split = month.split("");
         {
             if
             (split.length > 1) {
-                paymentPage.messageInvalidDate();
+                creditPage.messageInvalidDate();
             } else {
-                paymentPage.messageInvalidFormat();
+                creditPage.messageInvalidFormat();
             }
 
         }
@@ -734,142 +733,142 @@ public class TourServiceTest {
     @DisplayName("5.2.7 Ввод даты с невалидным месяцем действия карты при покупке тура в кредит. (Вставка специальных символов)")
     //Вставка невозможна
     public void shouldGetMessageWhenPurchaseOnCreditWithMonthContainsSpecialCharters() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getRandomCardNumber());
-        paymentPage.setMonth(DataHelper.generateSpecialCharacters(2));
-        paymentPage.setYear(DataHelper.generateValidYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getRandomCardNumber());
+        creditPage.setMonth(DataHelper.generateSpecialCharacters(2));
+        creditPage.setYear(DataHelper.generateValidYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
     }
 
     @Test
     @DisplayName("5.2.8 Ввод даты с невалидным месяцем действия карты при покупке тура в кредит. (Вставка кириллицы)")
     //Вставка невозможна
     public void shouldGetMessageWhenPurchaseOnCreditWithMonthContainsCyrillic() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getRandomCardNumber());
-        paymentPage.setMonth(DataHelper.generateCyrillicName());
-        paymentPage.setYear(DataHelper.generateValidYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getRandomCardNumber());
+        creditPage.setMonth(DataHelper.generateCyrillicName());
+        creditPage.setYear(DataHelper.generateValidYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
 
     }
 
     @Test
     @DisplayName("5.3.1 Ввод даты с невалидным годом действия карты при покупке тура в кредит. (Ввод данных в поле Год с пустым значением)")
     public void shouldGetMessageWhenPurchaseOnCreditWithYearFieldIsEmpty() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getRandomCardNumber());
-        paymentPage.setMonth(DataHelper.getNextMonth());
-        paymentPage.setYear(DataHelper.getEmptyYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.getRandomCvc());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getRandomCardNumber());
+        creditPage.setMonth(DataHelper.getNextMonth());
+        creditPage.setYear(DataHelper.getEmptyYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.getRandomCvc());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
 
     }
 
     @Test
     @DisplayName("5.3.2 Ввод даты с невалидным годом действия карты при покупке тура в кредит. (Значение в 1 символ)")
     public void shouldGetMessageWhenPurchaseOnCreditWithYearFieldWithOneDigits() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getRandomCardNumber());
-        paymentPage.setMonth(DataHelper.getNextMonth());
-        paymentPage.setYear(DataHelper.getYearWithOneValue());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.getRandomCvc());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getRandomCardNumber());
+        creditPage.setMonth(DataHelper.getNextMonth());
+        creditPage.setYear(DataHelper.getYearWithOneValue());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.getRandomCvc());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
     }
 
     @Test
     @DisplayName("5.3.3 Ввод даты с невалидным годом действия карты при покупке тура в кредит. (Значение в 3 символа)")
     public void shouldGetMessageWhenPurchaseOnCreditWithYearFieldWithThreeDigits() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getRandomCardNumber());
-        paymentPage.setMonth(DataHelper.generateValidMonth());
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getRandomCardNumber());
+        creditPage.setMonth(DataHelper.generateValidMonth());
         String a = DataHelper.generateInvalidMonthWihLengthThreeDigits();
-        paymentPage.setYear(a);
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.getRandomCvc());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidDate();
+        creditPage.setYear(a);
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.getRandomCvc());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidDate();
         assertEquals(0, DataHelperDB.getOrderEntityCount());
-        boolean actual = paymentPage.checkNumber(a);
+        boolean actual = creditPage.checkNumber(a);
         assertFalse(actual);
     }
 
     @Test
     @DisplayName("5.3.4 Ввод даты с невалидным годом действия карты при покупке тура в кредит.(Ввод данных с меньшим значением чем текущий год")
     public void shouldGetMessageWhenPurchaseOnCreditWithInvalidLastYear() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getRandomCardNumber());
-        paymentPage.setMonth(DataHelper.getNextMonth());
-        paymentPage.setYear(DataHelper.getPreviousYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.getRandomCvc());
-        paymentPage.clickContinueButton();
-        paymentPage.messageExpiredDate();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getRandomCardNumber());
+        creditPage.setMonth(DataHelper.getNextMonth());
+        creditPage.setYear(DataHelper.getPreviousYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.getRandomCvc());
+        creditPage.clickContinueButton();
+        creditPage.messageExpiredDate();
 
     }
 
     @Test
     @DisplayName("5.3.5 Ввод даты с невалидным годом действия карты при покупке тура в кредит. (Год со значением 6+ лет)")
     public void shouldGetMessageWhenPurchaseOnCreditWithInvalidNextYear() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getRandomCardNumber());
-        paymentPage.setMonth(DataHelper.getNextMonth());
-        paymentPage.setYear(DataHelper.getCurrentYearPlus5());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.getRandomCvc());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidDate();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getRandomCardNumber());
+        creditPage.setMonth(DataHelper.getNextMonth());
+        creditPage.setYear(DataHelper.getCurrentYearPlus5());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.getRandomCvc());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidDate();
 
     }
 
     @Test
     @DisplayName("5.3.6 Ввод даты с невалидным годом действия карты при покупке тура в кредит. (Год со значением 00)")
     public void shouldGetMessageWhenPurchaseOnCreditWithYearIsZero() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getRandomCardNumber());
-        paymentPage.setMonth(DataHelper.getNextMonth());
-        paymentPage.setYear(DataHelper.getInvalidYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.getRandomCvc());
-        paymentPage.clickContinueButton();
-        paymentPage.messageExpiredDate();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getRandomCardNumber());
+        creditPage.setMonth(DataHelper.getNextMonth());
+        creditPage.setYear(DataHelper.getInvalidYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.getRandomCvc());
+        creditPage.clickContinueButton();
+        creditPage.messageExpiredDate();
     }
 
     @Test
     @DisplayName("5.3.7 Ввод даты с невалидным годом действия карты при покупке тура в кредит. (Вставка специальных символов)")
     //Вставка невозможна
     public void shouldGetMessageWhenPurchaseOnCreditWithYearContainsSpecialCharters() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getRandomCardNumber());
-        paymentPage.setMonth(DataHelper.generateValidYear());
-        paymentPage.setYear(DataHelper.generateSpecialCharacters(2));
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getRandomCardNumber());
+        creditPage.setMonth(DataHelper.generateValidYear());
+        creditPage.setYear(DataHelper.generateSpecialCharacters(2));
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
     }
 
     @Test
     @DisplayName("5.3.8 Ввод даты с невалидным годом действия карты при покупке тура в кредит. (Вставка кириллицы)")
     //Вставка невозможна
     public void shouldGetMessageWhenPurchaseOnCreditWithYearContainsCyrillic() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getRandomCardNumber());
-        paymentPage.setMonth(DataHelper.generateValidYear());
-        paymentPage.setYear(DataHelper.generateCyrillicName());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getRandomCardNumber());
+        creditPage.setMonth(DataHelper.generateValidYear());
+        creditPage.setYear(DataHelper.generateCyrillicName());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
 
     }
 
@@ -877,13 +876,13 @@ public class TourServiceTest {
     @Test
     @DisplayName("5.4 Ввод карты c истекшим сроком действия при покупке тура в кредит. (Ввод даты раньше текущей даты)")
     public void shouldGetMessageWhenPurchaseOnCreditWithExpiredCard() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumber(16));
-        paymentPage.setMonthAndYear(DataHelper.generateInvalidMonthAndYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageExpiredDate();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCardNumber(16));
+        creditPage.setMonthAndYear(DataHelper.generateInvalidMonthAndYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageExpiredDate();
         assertEquals(0, DataHelperDB.getOrderEntityCount());
     }
 
@@ -891,13 +890,13 @@ public class TourServiceTest {
     @DisplayName("5.5.1 Ввод невалидного имени владельца карты при покупке тура в кредит.(Ввод данных в поле Владелец пользователя с именем на кириллице)")
 //баг
     public void shouldGetMessageWhenPurchaseOnCreditWithOwnerOnCyrillic() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumber(16));
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
-        paymentPage.setOwner(DataHelper.generateCyrillicName());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCardNumber(16));
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        creditPage.setOwner(DataHelper.generateCyrillicName());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
 
     }
 
@@ -905,39 +904,39 @@ public class TourServiceTest {
     @DisplayName("5.5.2 Ввод невалидного имени владельца карты при покупке тура в кредит.(Ввод данных в поле Владелец в цифровом значении")
     //баг
     public void shouldGetMessageWhenPurchaseOnCreditWithOwnerOnDigits() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumber(16));
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
-        paymentPage.setOwner(DataHelper.generateCardNumber(21));
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCardNumber(16));
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        creditPage.setOwner(DataHelper.generateCardNumber(21));
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
 
     }
 
     @Test
     @DisplayName("5.5.3 Ввод невалидного имени владельца карты при покупке тура в кредит.(Ввод данных в поле Владелец с пустым значением)")
     public void shouldGetMessageWhenPurchaseOnCreditWithOwnerEmpty() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumber(16));
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
-        paymentPage.setOwner(DataHelper.emptyFormField());
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageRequiredField();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCardNumber(16));
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        creditPage.setOwner(DataHelper.emptyFormField());
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageRequiredField();
 
     }
 
     @Test
     @DisplayName("5.5.3 Ввод невалидного имени владельца карты при покупке тура в кредит.(Ввод данных в поле Владелец со спецсимволами")
     public void shouldGetMessageWhenPurchaseOnCreditWithOwnerOnSymbols() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumber(16));
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
-        paymentPage.setOwner(DataHelper.generateSpecialCharacters(15));
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageFieldAreRequired();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCardNumber(16));
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        creditPage.setOwner(DataHelper.generateSpecialCharacters(15));
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageFieldsAreRequired();
 
 
     }
@@ -945,15 +944,15 @@ public class TourServiceTest {
     @Test
     @DisplayName("5.5.4 Ввод невалидного имени владельца карты при покупке тура в кредит.(Значение длинной более 25 символов в верхнем и нижнем регистре")
     public void shouldGetMessageWhenPurchaseOnCreditWithOwnerLargest() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumber(16));
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCardNumber(16));
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
         String a = DataHelper.generateRandomText(26);
-        paymentPage.setOwner(a);
-        paymentPage.setCVV(DataHelper.generateTreeDigit());
-        paymentPage.clickContinueButton();
+        creditPage.setOwner(a);
+        creditPage.setCVV(DataHelper.generateTreeDigit());
+        creditPage.clickContinueButton();
         assertEquals(0, DataHelperDB.getOrderEntityCount());
-        boolean actual = paymentPage.checkNumber(a);
+        boolean actual = creditPage.checkNumber(a);
         assertFalse(actual);
 
 
@@ -962,13 +961,13 @@ public class TourServiceTest {
     @Test
     @DisplayName("5.6.1 Ввод невалидного CVV-кода при покупке тура в кредит. (Ввод данных длиной в 1 символ")
     public void shouldGetMessageWhenPurchaseOnCreditWithTheFieldCvcHasOneValue() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumber(16));
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.getRandomOneDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCardNumber(16));
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.getRandomOneDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
 
 
     }
@@ -976,40 +975,40 @@ public class TourServiceTest {
     @Test
     @DisplayName("5.6.2 Ввод невалидного CVV-кода при покупке тура в кредит. (Ввод данных длиной в 2 символа")
     public void shouldGetMessageWhenPurchaseOnCreditWithTheFieldCvcHasTwoValue() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumber(16));
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.getRandomTwoDigit());
-        paymentPage.clickContinueButton();
-        paymentPage.messageInvalidFormat();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCardNumber(16));
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.getRandomTwoDigit());
+        creditPage.clickContinueButton();
+        creditPage.messageInvalidFormat();
     }
 
     @Test
     @DisplayName("5.6.3 Ввод невалидного CVV-кода при покупке тура в кредит. (Ввод данных длиной в 4 символа")
     public void shouldGetMessageWhenPurchaseOnCreditWithTheFieldCvcHasFourValue() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumber(16));
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
-        paymentPage.setOwner(DataHelper.generateName());
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCardNumber(16));
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        creditPage.setOwner(DataHelper.generateName());
         String a = DataHelper.generateCardNumber(4);
-        paymentPage.setCVV(a);
-        paymentPage.clickContinueButton();
+        creditPage.setCVV(a);
+        creditPage.clickContinueButton();
         assertEquals(0, DataHelperDB.getOrderEntityCount());
-        boolean actual = paymentPage.checkCvc(a);
+        boolean actual = creditPage.checkCvc(a);
         assertFalse(actual);
     }
 
     @Test
     @DisplayName("5.6.4 Ввод невалидного CVV-кода при покупке тура в кредит. (Ввод данных с пустым значением)")
     public void shouldGetMessageWhenPurchaseOnCreditWithTheFieldCvcIsEmpty() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.generateCardNumber(16));
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.emptyFormField());
-        paymentPage.clickContinueButton();
-        paymentPage.messageFieldAreRequired();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.generateCardNumber(16));
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.emptyFormField());
+        creditPage.clickContinueButton();
+        creditPage.messageFieldsAreRequired();
 
 
     }
@@ -1018,37 +1017,30 @@ public class TourServiceTest {
     @CsvFileSource(files = "src/test/resources/ValidCvc.csv")
     @DisplayName("5.6.5 Ввод валидного CVV-кода при покупке тура в кредит. (Ввод пограничных значений: c длиной в 3 символа)")
     public void shouldBeSuccessWhenPurchaseOnCreditWithValidCvc(String a) {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getApprovedCardNumber());
-        paymentPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(a);
-        paymentPage.clickContinueButton();
-        paymentPage.messageSuccessNotification();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getApprovedCardNumber());
+        creditPage.setMonthAndYear(DataHelper.generateValidMonthAndYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(a);
+        creditPage.clickContinueButton();
+        creditPage.messageSuccessNotification();
     }
 
 
     @Test
     @DisplayName("6 Попытка оплаты в кредит валидной картой со статусом \"DECLINED\" ")
     public void shouldNotBuyOnCreditWithValidCardAndDeclined() {
-        tourPage.pay();
-        paymentPage.setNumber(DataHelper.getDeclinedCardNumber());
-        paymentPage.setMonth(DataHelper.getNextMonth());
-        paymentPage.setYear(DataHelper.getCurrentYear());
-        paymentPage.setOwner(DataHelper.generateName());
-        paymentPage.setCVV(DataHelper.getRandomCvc());
-        paymentPage.clickContinueButton();
-        paymentPage.messageDeclined();
+        tourPage.payOnCredit();
+        creditPage.setNumber(DataHelper.getDeclinedCardNumber());
+        creditPage.setMonth(DataHelper.getNextMonth());
+        creditPage.setYear(DataHelper.getCurrentYear());
+        creditPage.setOwner(DataHelper.generateName());
+        creditPage.setCVV(DataHelper.getRandomCvc());
+        creditPage.clickContinueButton();
+        creditPage.messageDeclineNotification();
         assertEquals("DECLINED", DataHelperDB.findPayStatus());
 
     }
 
 
 }
-
-
-
-
-
-
-

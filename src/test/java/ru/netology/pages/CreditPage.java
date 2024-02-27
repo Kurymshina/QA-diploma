@@ -35,6 +35,15 @@ public class CreditPage {
         yearField.setValue(year);
     }
 
+    public boolean checkNumber(String number) {
+        return cardNumberField.getValue().equals(number);
+    }
+
+    public boolean checkCvc(String number) {
+        return cvcField.getValue().equals(number);
+    }
+
+
     public void setMonth(String month) {
         monthField.setValue(month);
     }
