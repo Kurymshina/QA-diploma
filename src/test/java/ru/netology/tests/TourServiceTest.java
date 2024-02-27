@@ -323,7 +323,7 @@ public class TourServiceTest {
 
     @Test
     @DisplayName("3.3.4 Ввод даты с невалидным годом действия карты при покупке тура.(Ввод данных с меньшим значением чем текущий год")
-    public void houldGetMessageWhenPurchaseWithInvalidLastYear() {
+    public void shouldGetMessageWhenPurchaseWithInvalidLastYear() {
         tourPage.pay();
         paymentPage.setNumber(DataHelper.getRandomCardNumber());
         paymentPage.setMonth(DataHelper.getNextMonth());
@@ -1001,7 +1001,7 @@ public class TourServiceTest {
     }
 
     @Test
-    @DisplayName("5.6.4 Ввод невалидного CVV-кода при покупке тура в кредит. (Ввод данных с пустым значением")
+    @DisplayName("5.6.4 Ввод невалидного CVV-кода при покупке тура в кредит. (Ввод данных с пустым значением)")
     public void shouldGetMessageWhenPurchaseOnCreditWithTheFieldCvcIsEmpty() {
         tourPage.pay();
         paymentPage.setNumber(DataHelper.generateCardNumber(16));
@@ -1016,7 +1016,7 @@ public class TourServiceTest {
 
     @ParameterizedTest
     @CsvFileSource(files = "src/test/resources/ValidCvc.csv")
-    @DisplayName("5.6.5 Ввод валидного CVV-кода при покупке тура в кредит. (Ввод пограничных значений: c длиной в 3 символа")
+    @DisplayName("5.6.5 Ввод валидного CVV-кода при покупке тура в кредит. (Ввод пограничных значений: c длиной в 3 символа)")
     public void shouldBeSuccessWhenPurchaseOnCreditWithValidCvc(String a) {
         tourPage.pay();
         paymentPage.setNumber(DataHelper.getApprovedCardNumber());
