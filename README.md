@@ -49,3 +49,36 @@
 *Для формирования окружения буду запускать три контейнера: c MySQL, с PostgreSQL и эмулятором банковских сервисов. 
 Все три контейнера опишу в одном файле docker-compose.yml для того чтобы запускать их одновременно.*
 ![image](https://github.com/Kurymshina/QA-diploma/assets/127852172/e5ab3d89-891e-4a85-a3ac-a6c14795374a)
+
+### Запуск приложения
+* Установить и запустить IntelliJ IDEA;
+* Установать и запустить Docker Desktop;
+* Скопировать репозиторий с Github по ссылке.
+* Открыть проект в IntelliJ IDEA.
+* Запуск тестового приложения
+* Запустить MySQL, PostgreSQL, NodeJS через терминал командой:
+> docker-compose up -buid либо docker-compose up -d
+* В новой вкладке терминала запустить тестируемое приложение:
+
+Для MySQL:
+
+> java -Dspring.datasource.url=jdbc:mysql://localhost:3306/app -jar artifacts/aqa-shop.jar
+
+Для PostgreSQL:
+
+> java -Dspring.datasource.url=jdbc:postgresql://localhost:5432/app -jar artifacts/aqa-shop.jar.
+* Убедиться в готовности системы. Приложение должно быть доступно по адресу:
+> http://localhost:8080/
+### Запуск тестов
+В новой вкладке терминала запустить тесты:
+
+Для MySQL:
+> .\gradlew clean test -Ddb.url=jdbc:mysql://localhost:3306/app
+Для PostgreSQL:
+> .\gradlew clean test -Ddb.url=jdbc:postgresql://localhost:5432/app
+### Перезапуск тестов и приложения
+Для остановки приложения в окне терминала нужно ввести команду Ctrl+С и повторить необходимые действия из предыдущих разделов.
+
+### Формирование отчёта о тестировании
+Предусмотрено формирование отчётности через Allure. Для этого в новой вкладке терминала вводим команду:
+> .\gradlew allureServe
