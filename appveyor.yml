@@ -4,6 +4,8 @@ stack: jdk 11
 
 services:
   - docker
+  - mysql
+  - postgresql10
 
 branches:
   only:
@@ -13,8 +15,9 @@ build: off
 
 install:
   - chmod +x gradlew
+  - ./gradlew test -Dselenide.headless=true --info
   - docker-compose up --build
   - java -jar artifacts/app-ibank-build-for-testers.jar -P:profile=test
+
 build_script:
   - npm start
-  - ./gradlew test -Dselenide.headless=true --info
