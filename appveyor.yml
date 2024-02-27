@@ -12,12 +12,10 @@ branches:
 build: off
 
 install:
-  - docker-compose up --build
   - chmod +x gradlew
-  - java -Dspring.datasource.url=jdbc:mysql://localhost:3306/app -jar artifacts/aqa-shop.jar
-
-
+  - docker-compose up --build
+  - timeout 60 java -Dspring.datasource.url=jdbc:mysql://localhost:3306/app -jar artifacts/aqa-shop.jar
 
 build_script:
+  - npm start
   - ./gradlew test -Dselenide.headless=true --info
- 
