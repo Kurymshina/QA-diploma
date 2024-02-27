@@ -15,7 +15,7 @@ build: off
 
 install:
   - chmod +x gradlew
-  - docker-compose up --build
+  - docker-compose up -d
   - java -jar artifacts/aqa-shop.jar -P:profile=test
   - ./gradlew test -Dselenide.headless=true --info
 
