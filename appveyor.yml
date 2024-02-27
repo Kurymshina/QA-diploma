@@ -15,9 +15,9 @@ build: off
 
 install:
   - chmod +x gradlew
-  - ./gradlew test -Dselenide.headless=true --info
   - docker-compose up --build
-  - java -jar artifacts/app-ibank-build-for-testers.jar -P:profile=test
+  - java -jar artifacts/aqa-shop.jar -P:profile=test
+  - ./gradlew test -Dselenide.headless=true --info
 
 build_script:
   - npm start
