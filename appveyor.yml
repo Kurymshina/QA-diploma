@@ -16,8 +16,9 @@ build: off
 install:
   - chmod +x gradlew
   - docker-compose up -d
-  - java "-Dspring.datasource.url=jdbc:mysql://localhost:3306/app" -jar artifacts/aqa-shop.jar -P:profile=test
-  - ./gradlew test -Dselenide.headless=true --info
+  - java "-Dspring.datasource.url=jdbc:mysql://localhost:3306/app" -jar artifacts/aqa-shop.jar
+  
 
 build_script:
+  - ./gradlew test -Dselenide.headless=true --info
   - npm start
