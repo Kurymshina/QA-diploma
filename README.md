@@ -56,7 +56,7 @@
 * Открыть проект в IntelliJ IDEA.
 * Запуск тестового приложения
 * Запустить MySQL, PostgreSQL, NodeJS через терминал командой:
-> docker-compose up -buid либо docker-compose up -d
+> docker-compose up --buid либо docker-compose up -d
 * В новой вкладке терминала запустить тестируемое приложение:
 
 Для MySQL:
